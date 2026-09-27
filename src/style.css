@@ -261,17 +261,17 @@ body {
 
 .profile-drawer {
   position: absolute;
-  left: 1rem;
-  right: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(960px, calc(100vw - 2rem));
   bottom: 1rem;
-  z-index: 8;
-  max-width: 960px;
-  margin: 0 auto;
+  z-index: 20;
   padding: 0.85rem 1rem 1rem;
-  background: rgba(10, 16, 22, 0.92);
-  border: 1px solid var(--panel-border);
+  background: rgba(10, 16, 22, 0.96);
+  border: 1px solid rgba(224, 122, 58, 0.35);
   border-radius: 16px;
   backdrop-filter: blur(12px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
 }
 
 .profile-drawer.hidden,

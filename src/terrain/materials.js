@@ -6,10 +6,12 @@ varying float vElev;
 uniform sampler2D heightMap;
 uniform float exaggeration;
 uniform float elevScale;
+uniform float maxElev;
 
 void main() {
   vUv = uv;
-  float h = texture2D(heightMap, uv).r;
+  float hNorm = texture2D(heightMap, uv).r;
+  float h = hNorm * maxElev;
   vElev = h;
   vec3 pos = position;
   pos.z += h * elevScale * exaggeration;
@@ -48,11 +50,14 @@ void main() {
   vec3 base = hypsometric(vElev);
 
   if (mapMode == 1) {
-    // 等高线：对高程取模形成线条
-    float interval = mix(150.0, 500.0, smoothstep(0.0, 5000.0, vElev));
-    float c = abs(fract(vElev / interval) - 0.5);
-    float line = 1.0 - smoothstep(0.02, 0.08, c);
-    base = mix(base * 0.72, vec3(0.12, 0.10, 0.08), line);
+    // 等高线模式：浅底 + 深色等高线，视觉对比更强
+    base = mix(vec3(0.88, 0.84, 0.76), vec3(0.62, 0.70, 0.58), clamp(vElev / 4500.0, 0.0, 1.0));
+    float interval = mix(200.0, 400.0, smoothstep(0.0, 5000.0, vElev));
+    float band = fract(vElev / interval);
+    float line = 1.0 - smoothstep(0.0, 0.045, min(band, 1.0 - band));
+    // 每 5 条加粗一条主等高线
+    float major = step(0.92, fract(vElev / (interval * 5.0)));
+    base = mix(base, vec3(0.18, 0.14, 0.10), line * (0.75 + 0.25 * major));
   }
 
   // 简单坡向明暗
@@ -79,11 +84,13 @@ export function createTerrainMaterial(heightTex, maskTex, exaggeration = 1.35) {
 }
 
 export function elevationToDataTexture(data, width, height, maxElev = 8848) {
-  const arr = new Float32Array(width * height);
+  // 使用 Uint8 提升兼容性（避免部分环境 Float Red 纹理问题）
+  const arr = new Uint8Array(width * height);
   for (let i = 0; i < data.length; i++) {
-    arr[i] = Math.max(0, data[i]);
+    const h = Math.max(0, data[i]);
+    arr[i] = Math.min(255, Math.round((h / maxElev) * 255));
   }
-  const tex = new THREE.DataTexture(arr, width, height, THREE.RedFormat, THREE.FloatType);
+  const tex = new THREE.DataTexture(arr, width, height, THREE.RedFormat, THREE.UnsignedByteType);
   tex.needsUpdate = true;
   tex.minFilter = THREE.LinearFilter;
   tex.magFilter = THREE.LinearFilter;

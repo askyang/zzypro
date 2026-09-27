@@ -196,8 +196,15 @@ function bindUI() {
   });
 
   document.getElementById('btn-profile').addEventListener('click', () => {
-    document.getElementById('profile-drawer').classList.remove('hidden');
-    document.getElementById('profile-drawer').setAttribute('aria-hidden', 'false');
+    const drawer = document.getElementById('profile-drawer');
+    drawer.classList.remove('hidden');
+    drawer.setAttribute('aria-hidden', 'false');
+    // 每次打开重绘，避免偶发空白
+    drawProfile(
+      document.getElementById('profile-canvas'),
+      sampleProfile36(elevData, elevW, elevH),
+    );
+    toast('已打开北纬 36° 三大阶梯剖面');
   });
   document.getElementById('btn-close-profile').addEventListener('click', () => {
     document.getElementById('profile-drawer').classList.add('hidden');
@@ -209,6 +216,7 @@ function setMode(mode) {
   material.uniforms.mapMode.value = mode;
   document.getElementById('mode-step').classList.toggle('active', mode === 0);
   document.getElementById('mode-contour').classList.toggle('active', mode === 1);
+  toast(mode === 0 ? '已切换：阶梯着色' : '已切换：等高线');
 }
 
 function showIntro(region) {
