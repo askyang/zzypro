@@ -1,0 +1,363 @@
+:root {
+  --bg: #0c1218;
+  --panel: rgba(14, 22, 30, 0.82);
+  --panel-border: rgba(244, 239, 230, 0.12);
+  --text: #f4efe6;
+  --muted: rgba(244, 239, 230, 0.62);
+  --accent: #e07a3a;
+  --accent-2: #3d8f6e;
+  --font: 'Noto Sans SC', 'PingFang SC', sans-serif;
+  --display: 'ZCOOL XiaoWei', 'Noto Sans SC', serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+}
+
+#app {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+#terrain-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+  cursor: grab;
+}
+
+#terrain-canvas:active {
+  cursor: grabbing;
+}
+
+.top-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 5;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.1rem 1.25rem;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(8, 12, 16, 0.72), transparent);
+}
+
+.brand {
+  display: flex;
+  gap: 0.85rem;
+  align-items: center;
+  pointer-events: auto;
+}
+
+.brand-mark {
+  font-family: var(--display);
+  font-size: 2rem;
+  line-height: 1;
+  color: var(--accent);
+  letter-spacing: 0.08em;
+}
+
+.brand h1 {
+  margin: 0;
+  font-family: var(--display);
+  font-size: 1.45rem;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+}
+
+.brand p {
+  margin: 0.2rem 0 0;
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+.mode-switch {
+  display: flex;
+  gap: 0.35rem;
+  pointer-events: auto;
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  border-radius: 999px;
+  padding: 0.25rem;
+  backdrop-filter: blur(10px);
+}
+
+.mode-switch button,
+.action-row button,
+.region-list button,
+#btn-close-profile {
+  font-family: inherit;
+  border: none;
+  cursor: pointer;
+}
+
+.mode-switch button {
+  background: transparent;
+  color: var(--muted);
+  padding: 0.45rem 0.9rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+}
+
+.mode-switch button.active {
+  background: var(--accent);
+  color: #1a1008;
+  font-weight: 600;
+}
+
+.side-panel {
+  position: absolute;
+  top: 5.5rem;
+  right: 1rem;
+  width: min(320px, calc(100vw - 1.5rem));
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 0.9rem;
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  border-radius: 16px;
+  backdrop-filter: blur(14px);
+  max-height: calc(100vh - 6.5rem);
+  overflow: auto;
+}
+
+.slider-block {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.35rem 0.75rem;
+  align-items: center;
+  font-size: 0.85rem;
+}
+
+.slider-block span {
+  grid-column: 1 / -1;
+  color: var(--muted);
+}
+
+.slider-block input {
+  width: 100%;
+  accent-color: var(--accent);
+}
+
+.slider-block strong {
+  font-size: 0.85rem;
+  color: var(--accent);
+}
+
+.action-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.45rem;
+}
+
+.action-row .primary {
+  grid-column: 1 / -1;
+}
+
+.action-row button {
+  border-radius: 10px;
+  padding: 0.55rem 0.6rem;
+  font-size: 0.82rem;
+  background: rgba(244, 239, 230, 0.08);
+  color: var(--text);
+  border: 1px solid var(--panel-border);
+}
+
+.action-row button.primary {
+  background: linear-gradient(135deg, #c86a32, #e09a4a);
+  color: #1a1008;
+  font-weight: 700;
+  border: none;
+}
+
+.action-row button.active {
+  outline: 1px solid var(--accent);
+}
+
+.intro-panel {
+  padding: 0.75rem 0.8rem;
+  border-radius: 12px;
+  background: linear-gradient(160deg, rgba(61, 143, 110, 0.18), rgba(224, 122, 58, 0.1));
+  border: 1px solid rgba(244, 239, 230, 0.1);
+  cursor: pointer;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.intro-panel:hover {
+  transform: translateY(-1px);
+  border-color: rgba(224, 122, 58, 0.45);
+}
+
+.intro-panel h2 {
+  margin: 0 0 0.35rem;
+  font-family: var(--display);
+  font-size: 1.15rem;
+  font-weight: 400;
+}
+
+.intro-panel p {
+  margin: 0;
+  font-size: 0.8rem;
+  line-height: 1.55;
+  color: var(--muted);
+}
+
+.intro-panel .hint {
+  display: inline-block;
+  margin-top: 0.45rem;
+  font-size: 0.7rem;
+  color: var(--accent);
+}
+
+.region-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.region-list button {
+  width: 100%;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  padding: 0.5rem 0.65rem;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--text);
+  border: 1px solid transparent;
+}
+
+.region-list button small {
+  color: var(--muted);
+  font-size: 0.7rem;
+}
+
+.region-list button.active,
+.region-list button:hover {
+  border-color: rgba(224, 122, 58, 0.45);
+  background: rgba(224, 122, 58, 0.1);
+}
+
+.profile-drawer {
+  position: absolute;
+  left: 1rem;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 8;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0.85rem 1rem 1rem;
+  background: rgba(10, 16, 22, 0.92);
+  border: 1px solid var(--panel-border);
+  border-radius: 16px;
+  backdrop-filter: blur(12px);
+}
+
+.profile-drawer.hidden,
+.toast.hidden {
+  display: none;
+}
+
+.profile-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.profile-head h2 {
+  margin: 0;
+  font-family: var(--display);
+  font-size: 1.1rem;
+  font-weight: 400;
+}
+
+#btn-close-profile {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text);
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
+#profile-canvas {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 10px;
+}
+
+.profile-caption {
+  margin: 0.5rem 0 0;
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+.toast {
+  position: absolute;
+  left: 50%;
+  bottom: 1.25rem;
+  transform: translateX(-50%);
+  z-index: 10;
+  padding: 0.55rem 1rem;
+  border-radius: 999px;
+  background: rgba(20, 28, 36, 0.92);
+  border: 1px solid var(--panel-border);
+  font-size: 0.82rem;
+  white-space: nowrap;
+  max-width: calc(100vw - 2rem);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (max-width: 720px) {
+  .top-bar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .side-panel {
+    top: auto;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    width: 100%;
+    max-height: 42vh;
+    border-radius: 16px 16px 0 0;
+  }
+
+  .brand-mark {
+    font-size: 1.6rem;
+  }
+
+  .brand h1 {
+    font-size: 1.15rem;
+  }
+
+  .toast {
+    bottom: 44vh;
+  }
+}
