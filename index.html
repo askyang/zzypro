@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>中国地形 · 交互式 3D 沙盘</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=ZCOOL+XiaoWei&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div id="app">
+      <canvas id="terrain-canvas"></canvas>
+
+      <header class="top-bar">
+        <div class="brand">
+          <span class="brand-mark">山河</span>
+          <div>
+            <h1>中国地形三维沙盘</h1>
+            <p>拖拽旋转 · 滚轮/捏合缩放 · 点击脉冲点飞入</p>
+          </div>
+        </div>
+        <div class="mode-switch" role="group" aria-label="地图模式">
+          <button type="button" id="mode-step" class="active" data-mode="step">
+            阶梯着色
+          </button>
+          <button type="button" id="mode-contour" data-mode="contour">
+            等高线
+          </button>
+        </div>
+      </header>
+
+      <aside class="side-panel">
+        <label class="slider-block">
+          <span>地形夸张度</span>
+          <input
+            id="exaggeration"
+            type="range"
+            min="0.2"
+            max="3"
+            step="0.05"
+            value="1.35"
+          />
+          <strong id="exaggeration-value">1.35×</strong>
+        </label>
+
+        <div class="action-row">
+          <button type="button" id="btn-tour" class="primary">自动巡礼</button>
+          <button type="button" id="btn-voice" class="ghost">语音播放</button>
+          <button type="button" id="btn-profile" class="ghost">北纬36°剖面</button>
+        </div>
+
+        <div id="intro-panel" class="intro-panel" title="点击播报简介">
+          <h2 id="intro-title">中国三大阶梯</h2>
+          <p id="intro-text">
+            中国地势西高东低，大致呈三级阶梯分布。点击脉冲点飞入区域，或开启自动巡礼听解说。
+          </p>
+          <span class="hint">点击本栏可语音播报</span>
+        </div>
+
+        <ul id="region-list" class="region-list"></ul>
+      </aside>
+
+      <div id="profile-drawer" class="profile-drawer hidden" aria-hidden="true">
+        <div class="profile-head">
+          <h2>沿北纬 36° 剖面 · 三大阶梯</h2>
+          <button type="button" id="btn-close-profile" aria-label="关闭剖面">×</button>
+        </div>
+        <canvas id="profile-canvas" width="900" height="260"></canvas>
+        <p class="profile-caption">
+          自西向东：第一阶梯（青藏高原）→ 第二阶梯（黄土高原等）→ 第三阶梯（华北平原）
+        </p>
+      </div>
+
+      <div id="toast" class="toast hidden" role="status"></div>
+    </div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
